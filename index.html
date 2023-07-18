@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <title>Web-Form</title>
+  
+ 
+</head>
+<body>
+    <h4>Job Application form</h4>
+    <form action="#" method="get">
+    <fieldset>
+      <legend>Create An Account</legend>
+     <input type="file" class="inputFile" id="fileInp" onchange="getFile(event)" accept="Image/png,Image/jpg"/>
+
+     <label for="fileInp">+</label>
+     <span class="fileText"></span>
+     <button onclick="uploadImage()">Upload Image</button>
+     <div class="bar">
+       <div class="progress"></div>
+     </div>
+      <div class="UploadPercentage">0%</div>
+     <br><br>
+
+      <label for="username"><b>Username:</b></label>
+      <input name="name" type="text"
+      placeholder="username" id="username"><!--interlink label and input-->
+      <br><br>
+       <label for="password"><b>Password:</b></label>
+       <input type="password"
+       placeholder="create your password" id="password">
+       <br><br>
+       <label for="email"><b>email-id:</b></label>
+       <input type="text" placeholder="enter your email-id" id="email">
+       <br><br>
+       <label for="MobileNo"><b>Mobile-No:</b></label>
+       <input type="number" placeholder="enter your number" id="MobileNo">
+       <!-- dob -->
+       
+
+        <button type="submit"  id="submit">submit</button>
+          <a href="#">forgot password</a>
+      <div class="uploadImage">
+        <img alt="" class="img" />
+      </div>
+
+    
+    </fieldset>
+    </form>
+
+
+     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+   <script type="module">
+    
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-app.js";
+  import { getDatabase,ref,set,get,child } from "https://www.gstatic.com/firebasejs/10.0.0/firebase-database.js";
+
+
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyA5fllEYE5b_TQB3Yu-GljN0aDaZZAbpAw",
+    authDomain: "form-data-95ff0.firebaseapp.com",
+    projectId: "form-data-95ff0",
+    storageBucket: "form-data-95ff0.appspot.com",
+    messagingSenderId: "368198685602",
+    appId: "1:368198685602:web:3fb12323914e94402a18fb"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  document.getElementById("submit").addEventListener('click' ,function(e){
+    e.preventDefault();
+    set(ref(db,'user/' +document.getElementById("username").value),{
+           username: document.getElementById("username").value,
+           email: document.getElementById("email").value,
+           password: document.getElementById("password").value,
+           MobileNo: document.getElementById("MobileNo").value,
+           
+    })
+    alert("Create An Account Successfully!");
+  })
+
+   </script>
+
+ <!-- //image upload  -->
+
+  <script>
+    var fileText=document.querySelector(".fileText");
+    var UploadPercentage=document.querySelector(".uploadPercentage")
+    var progress =document.querySelector(".progress");
+    var img =document.querySelector(".img");
+    var percentVal;
+    var fileItem;
+    var fileName;
+    function getFile(e){
+       fileItem=e.target.files[0];
+       fileName=fileItem.name;
+       fileText.innerHTML = fileName;
+    }
+
+    function uploadImage(){
+           let storageRef=firebase.storage().ref("images/"+fileName);
+           let uploadTask =storageRef.put(fileItem);
+
+           uplodeTask.on("state_changed",(snapshot)=>{
+            console.log(snapshot);
+            percentVal=math.floor((snapshot.bytesTransferred/snapshot.totalBytes)*100);
+            console.log(percentVal);
+            UploadPercentage.innerHTML=percentVal+"%";
+            progress.style.width =percentVal+"%";
+           },(error)=>{
+            console.log("error is",error);
+           },()=>{
+            uploadTask.snapshot.ref.getDownloadURL().then((url)=>{
+              console.log("url",url);
+                 
+                if(url !="")
+                {
+                  img.setAttribute("img",url);
+                  img.style.display="block";
+                }
+
+
+            })
+           })
+    }
+  </script>
+
+</body>
+
+</html>
